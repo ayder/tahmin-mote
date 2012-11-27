@@ -1,4 +1,9 @@
 #!/usr/bin/python
+# Bu program bir ozgur yazilim urunudur. Bu programi GNU Genel Kamu
+# Lisansi aldinta dilediginiz gibi cogaltip, degistirip kullanabilirsiniz
+# tumunu yada parcalarini arkadaslariniz ile paylasabilirsiniz.
+# WiiMote ve Wii Nintendo firmasinin tescilli urunudur.
+
 import random
 import cwiid
 import time
