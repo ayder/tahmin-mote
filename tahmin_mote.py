@@ -18,9 +18,9 @@ Windowze/mac sistemce cwiid nin destegi varsa denenebilir
 
 wm = None
 
-#    WiiMote ile baglanti kuralim. Baglanti saglanirsa
-#    WiiMote 'un A-B tusalarini ve asagi yukari sensorunu aktif edelim
-#    sonra 1. isigini yakalim
+# WiiMote ile baglanti kuralim. Baglanti saglanirsa
+# WiiMote 'un A-B tusalarini ve asagi yukari sensorunu aktif edelim
+# sonra 1. isigini yakalim
 def connect_mote():
     global wm
     print "Lutfen Wiimote uzerine 1 ve 2 tusuna ayni anda basiniz"
@@ -34,6 +34,8 @@ def connect_mote():
 
     return wm
 
+# Sayi bulmacanin Wii olmadan bu fonksiyon ile oynanabilir
+# TODO belki wiimote a n denemde baglanamaz ise buna dusmesi saglanabilir
 def sayi_al(prompt):
     try:
         tahmin=int(raw_input(prompt))
@@ -50,13 +52,14 @@ def print_there(x, y, text,stat):
 
 # BTN_A ya basilana kadar dongude kalalim. wm.state['acc'][1] bize WiiMote
 # yonu yukarda yada asagida durumuna gore tahminimizi artiracak yada azaltacak
-def wm_sayi_al(wm,tahmin,max_tahmin):
+def wm_sayi_al(tahmin,max_tahmin):
+    global vm
 
     while not wm.state['buttons'] & cwiid.BTN_A:
         accel = wm.state['acc'][1]
-        # Yaklasik olarak accel > 128 'k ise WiiMote asagi dogru 
-        # cevrilmis, accel < 128 ise asagi dogru bakiyor diyebiliriz.
-        # TODO buraya daha iyi bir kalibrasyon yazmak gerekiyor
+        # Yaklasik olarak accel > 128 'k ise WiiMote asagi dogru cevrilmis
+        # accel < 128 ise yukari dogru bakiyor diyebiliriz.
+        # TODO buraya daha iyi bir kalibrasyon dusunmek gerekiyor
         var = int ((129 - accel) / 6)
 
         # WiiMode dan gelen hesaplamanin oyun limitlerini asmasini engelleyelim
@@ -71,7 +74,7 @@ def wm_sayi_al(wm,tahmin,max_tahmin):
 
 #  max_tahmin ile 0 arasinda Wiimote ile gonderdiginiz tahminler
 #  burada kontrol ediliyor
-def sayi_oyunu(max_tahmin,wm):
+def sayi_oyunu(max_tahmin):
 
     deneme=0
     tahmin =(0 + max_tahmin)/2
@@ -83,7 +86,7 @@ def sayi_oyunu(max_tahmin,wm):
 
     while True:
         deneme +=1
-        tahmin = wm_sayi_al(wm,tahmin,max_tahmin)
+        tahmin = wm_sayi_al(tahmin,max_tahmin)
         #tahmin=sayi_al("[%s] Tahmininizi nedir? :" % deneme )
 
         print "[%d] Tahmininiz: %d" % (deneme,tahmin),
@@ -112,9 +115,9 @@ def main():
              Tahmini yapmak icin WiiMote 'u yukari yada asagi cevirin
              Kumandayi yukari dogru kaldirdiginizda tahmin artacak
              asagi cevirdiginizde azalacaktir.
-             Dogru tahmine geldiginizda kumandada A tusuna basiniz\n\n"""
+             Istediginiz tahmine geldiginizda kumandada A tusuna basiniz\n\n"""
     
-    sayi_oyunu(max_tahmin,wm)
+    sayi_oyunu(max_tahmin)
 
     kontrol = raw_input("Bir daha oynamak ister misiniz? [E/H]:")
     if kontrol == 'E' or kontrol == 'e': main()
